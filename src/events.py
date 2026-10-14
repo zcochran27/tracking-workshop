@@ -1,7 +1,6 @@
 """Working with SkillCorner dynamic events and phases of play.
 
 Workshop Part 2 (branch: feature/off-ball-runs).
-YOUR TASK: implement ``get_off_ball_runs`` below. ``add_phase_info`` is done.
 """
 from __future__ import annotations
 
@@ -23,7 +22,7 @@ def add_phase_info(events: pd.DataFrame, phases: pd.DataFrame) -> pd.DataFrame:
 
     Each event row has a ``phase_index`` that points at the ``index`` column of
     the phases table. We merge on it to bring in the phase's frame window,
-    duration and whether the possession led to a shot.
+    duration and the out-of-possession phase type.
     """
     cols = {
         "index": "phase_index",
@@ -37,7 +36,6 @@ def add_phase_info(events: pd.DataFrame, phases: pd.DataFrame) -> pd.DataFrame:
 
 
 def _as_list(value: Union[str, Iterable[str], None]) -> Optional[list]:
-    """Turn None -> None, "a" -> ["a"], ["a", "b"] -> ["a", "b"]."""
     if value is None:
         return None
     if isinstance(value, str):
@@ -62,14 +60,17 @@ def get_off_ball_runs(
         min_duration: keep runs lasting at least this many seconds.
 
     Returns:
-        The matching runs, sorted by frame_start, with a fresh index (0, 1, 2...).
-
-    Hints:
-        - Start with rows where ``event_type == "off_ball_run"``.
-        - Use ``_as_list`` so both "behind" and ["behind", "support"] work,
-          then ``.isin(...)`` on ``event_subtype`` / ``team_in_possession_phase_type``.
-        - Only apply a filter when its argument is not None.
-        - Finish with ``.sort_values("frame_start").reset_index(drop=True)``.
+        The matching runs, sorted by frame_start, with a fresh index.
     """
-    # TODO (Part 2): replace the line below with your implementation
-    raise NotImplementedError("get_off_ball_runs is your Part 2 task")
+    runs = events[events["event_type"] == "off_ball_run"]
+    subtypes = _as_list(subtype)
+    if subtypes is not None:
+        runs = runs[runs["event_subtype"].isin(subtypes)]
+    phases = _as_list(phase)
+    if phases is not None:
+        runs = runs[runs["team_in_possession_phase_type"].isin(phases)]
+    if targeted is not None:
+        runs = runs[runs["targeted"] == targeted]
+    if min_duration is not None:
+        runs = runs[runs["duration"] >= min_duration]
+    return runs.sort_values("frame_start").reset_index(drop=True)

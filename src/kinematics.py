@@ -38,18 +38,17 @@ def smooth_positions(xy: pd.DataFrame, window: int = 5) -> pd.DataFrame:
 
 
 def add_velocity(xy: pd.DataFrame, fps: int = FPS) -> pd.DataFrame:
-    """Add vx, vy (m/s), speed (m/s) and speed_kmh.   <-- YOUR TASK (Part 3)
+    """Add vx, vy (m/s), speed (m/s) and speed_kmh.
 
-    Hints:
-        - Work on a copy: ``out = xy.copy()`` and return ``out``.
-        - dt (seconds between rows) = ``out["frame_id"].diff() / fps``.
-          Using frame numbers means a 3-frame gap correctly counts as 0.3 s.
-        - vx = change in x / dt, vy = change in y / dt   (``.diff()``)
-        - speed = sqrt(vx^2 + vy^2)  ->  ``np.hypot(vx, vy)``
-        - speed_kmh = speed * 3.6
+    dt comes from the frame numbers, so a gap of 3 frames counts as 0.3 s.
     """
-    # TODO (Part 3): replace the line below with your implementation
-    raise NotImplementedError("add_velocity is your Part 3 task")
+    out = xy.copy()
+    dt = out["frame_id"].diff() / fps
+    out["vx"] = out["x"].diff() / dt
+    out["vy"] = out["y"].diff() / dt
+    out["speed"] = np.hypot(out["vx"], out["vy"])
+    out["speed_kmh"] = out["speed"] * 3.6
+    return out
 
 
 def add_acceleration(xy: pd.DataFrame, fps: int = FPS) -> pd.DataFrame:
