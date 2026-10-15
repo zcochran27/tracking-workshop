@@ -71,5 +71,17 @@ def get_off_ball_runs(
         - Only apply a filter when its argument is not None.
         - Finish with ``.sort_values("frame_start").reset_index(drop=True)``.
     """
-    # TODO (Part 2): replace the line below with your implementation
-    raise NotImplementedError("get_off_ball_runs is your Part 2 task")
+    
+    runs = events[events["event_type"] == "off_ball_run"]
+    
+    subtype_list = _as_list(subtype)
+    if subtype_list is not None:
+        runs = runs[runs["event_subtype"].isin(subtype_list)]
+    phase_list = _as_list(phase)
+    if phase_list is not None:
+        runs = runs[runs["team_in_possession_phase_type"].isin(phase_list)]
+    if targeted is not None:
+        runs = runs[runs["targeted"] == targeted]
+    if min_duration is not None:
+        runs = runs[runs["duration"] >= min_duration]
+    return runs.sort_values("frame_start").reset_index(drop=True)
