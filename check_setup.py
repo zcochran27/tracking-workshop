@@ -18,7 +18,11 @@ def report(name, passed, detail=""):
     print(f"[{'OK' if passed else 'FAIL'}] {name}{': ' + detail if detail else ''}")
 
 
-report("Python >= 3.10", sys.version_info >= (3, 10), sys.version.split()[0])
+v = sys.version_info
+report("Python 3.10 to 3.14 (3.13 recommended)", (3, 10) <= v[:2] < (3, 15),
+       sys.version.split()[0] + ("" if (3, 10) <= v[:2] < (3, 15) else ". Make the venv with Python 3.13: see INSTALL.md"))
+report("Running inside the .venv", sys.prefix != sys.base_prefix,
+       "" if sys.prefix != sys.base_prefix else "activate it first: see README step 4")
 
 for pkg in ["kloppy", "pandas", "numpy", "matplotlib", "mplsoccer", "PIL"]:
     try:
@@ -33,7 +37,7 @@ if git:
     report("git installed", True, subprocess.run(["git", "--version"], capture_output=True, text=True).stdout.strip())
     report("git user.name set", bool(name), name or 'run: git config --global user.name "Your Name"')
 else:
-    report("git installed", False, "see README for install instructions")
+    report("git installed", False, "see INSTALL.md")
 
 if ok:
     try:

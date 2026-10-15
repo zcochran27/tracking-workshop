@@ -6,17 +6,17 @@ Learn Git and GitHub by building a real football analytics pipeline: load SkillC
 
 ![workflow](https://img.shields.io/badge/workflow-branch%20%E2%86%92%20commit%20%E2%86%92%20PR%20%E2%86%92%20merge-blue)
 
-## Before the workshop (15 minutes)
+## Before the workshop (20 minutes)
 
-1. **Make a GitHub account** at [github.com](https://github.com) if you don't have one.
-2. **Install Git** and check it works: `git --version`
-   - macOS: `xcode-select --install` · Windows: [git-scm.com](https://git-scm.com/download/win) · Linux: `sudo apt install git`
-3. **Install Python 3.10 or newer**: `python3 --version`
-4. **Tell Git who you are** (use the email on your GitHub account):
-   ```bash
-   git config --global user.name "Your Name"
-   git config --global user.email "you@ucsd.edu"
-   ```
+**New to Python or Git?** Follow **[INSTALL.md](INSTALL.md)** first. It walks through installing Git, Python 3.13 and VS Code on Windows and Mac, making a GitHub account, and checking everything works.
+
+Already set up? Check that these all print a version, then carry on:
+
+```bash
+git --version
+py -V:3.13 --version          # Mac: python3.13 --version
+git config user.name          # should print your name; if not, see INSTALL.md
+```
 
 ## Get the code: fork, then clone
 
@@ -36,13 +36,14 @@ You will work in **your own copy** (a fork) of this repo, so you can push branch
 4. Create a virtual environment and install the packages.
    A **virtual environment** (venv) is a private set of packages for this project only, so installing kloppy here can't break your other classes' code. The `.venv` folder is gitignored: you commit `requirements.txt`, never the environment.
    ```bash
-   python3 -m venv .venv                     # Windows: python -m venv .venv
-   source .venv/bin/activate                 # Windows: .venv\Scripts\activate
+   py -V:3.13 -m venv .venv                  # Mac: python3.13 -m venv .venv
+   .venv\Scripts\activate                    # Mac: source .venv/bin/activate
    pip install -r requirements.txt
    python -m ipykernel install --user --name tracking-workshop --display-name "tracking-workshop"
    nbstripout --install                      # keeps notebook outputs out of your commits
    ```
-   Your prompt now starts with `(.venv)`. Run `activate` again each time you open a new terminal.
+   Your prompt now starts with `(.venv)`. Run `activate` again each time you open a new terminal. Inside the venv, `python` always means the venv's Python 3.13, on Windows and Mac alike.
+   (Git Bash on Windows activates with `source .venv/Scripts/activate`.)
 5. Check everything works (needs internet, takes about a minute):
    ```bash
    python check_setup.py
